@@ -1,5 +1,10 @@
 import random, time
 import tabulate
+###implement pivot choice functions, pivot_first chooses first element of list as pivot, pivot_random chooses a random element of list as pivot
+def pivot_first(L):
+    return L[0]
+def pivot_random(L):
+    return random.choice(L)
 
 def ssort(L):
     ### selection sort
@@ -11,10 +16,22 @@ def ssort(L):
         L[0], L[m] = L[m], L[0]
         print('recursively sorting L=%s\n' % L[1:])
         return [L[0]] + ssort(L[1:])
-        
+###implement qsort while using partitioning methods from lecture        
 def qsort(a, pivot_fn):
-    ## TO DO
-    pass
+    if len(a) <= 1:
+        return a
+    pivot_value = pivot_fn(a)
+
+    L, R, P = [],[],[]
+    for x in a:
+        if x < pivot_value:
+            L.append(x)
+        elif x > pivot_value:
+            R.append(x)
+        else:
+            P.append(x)
+    return qsort(L, pivot_fn) + P+ qsort(R, pivot_fn)
+        
     
 def time_search(sort_fn, mylist):
     """
@@ -34,6 +51,7 @@ def time_search(sort_fn, mylist):
       the number of milliseconds it takes to run this
       search function on this input.
     """
+    L=list(mylist)
     start = time.time()
     sort_fn(mylist)
     return (time.time() - start) * 1000
@@ -49,10 +67,12 @@ def compare_sort(sizes=[100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 10
       indicating the number of milliseconds it takes
       for each method to run on each value of n
     """
+    ###used our pivot choice functions to sort the algorithms for comparison
     ### TODO - sorting algorithms for comparison
-    qsort_fixed_pivot = # 
-    qsort_random_pivot = #
-    tim_sort = #
+    qsort_fixed_pivot = lambda L: qsort(L, pivot_first)
+    qsort_random_pivot = lambda L: qsort(L, pivot_random)
+    tim_sort = sorted
+    selection_sort= ssort
     result = []
     for size in sizes:
         # create list in ascending order
