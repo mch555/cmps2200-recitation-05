@@ -1,5 +1,8 @@
 import random, time
 import tabulate
+import sys
+
+sys.setrecursionlimit(20000)
 ###implement pivot choice functions, pivot_first chooses first element of list as pivot, pivot_random chooses a random element of list as pivot
 def pivot_first(L):
     return L[0]
@@ -12,9 +15,9 @@ def ssort(L):
         return(L)
     else:
         m = L.index(min(L))
-        print('selecting minimum %s' % L[m])       
+        #print('selecting minimum %s' % L[m])       
         L[0], L[m] = L[m], L[0]
-        print('recursively sorting L=%s\n' % L[1:])
+        #print('recursively sorting L=%s\n' % L[1:])
         return [L[0]] + ssort(L[1:])
 ###implement qsort while using partitioning methods from lecture        
 def qsort(a, pivot_fn):
@@ -53,7 +56,7 @@ def time_search(sort_fn, mylist):
     """
     L=list(mylist)
     start = time.time()
-    sort_fn(mylist)
+    sort_fn(L)
     return (time.time() - start) * 1000
     ###
 
@@ -73,29 +76,48 @@ def compare_sort(sizes=[100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 10
     qsort_random_pivot = lambda L: qsort(L, pivot_random)
     tim_sort = sorted
     selection_sort= ssort
-    result = []
+    print("--1b: Random Permutation--")
+    result=[]
     for size in sizes:
         # create list in ascending order
-        mylist = list(range(size))
-        # shuffles list if needed
-        #random.shuffle(mylist)
-        result.append([
-            len(mylist),
-            time_search(qsort_fixed_pivot, mylist),
-            time_search(qsort_random_pivot, mylist),
-        ])
-    return result
-    ###
+        mylist_template = list(range(size))
+        random.shuffle(mylist_template)
 
-def print_results(results):
+        result.append([
+            len(mylist_template),
+            time_search(selection_sort, mylist_template),
+            time_search(qsort_fixed_pivot, mylist_template),
+            time_search(qsort_random_pivot, mylist_template),
+            time_search(tim_sort, mylist_template)
+        ])
+    print_results(result, headers=['n', 'Selection Sort', 'qsort-fixed-pivot', 'qsort-random-pivot', 'Timsort'])
+
+    print("\n--1b: Already Sorted Permutations--")
+    result_sorted= []
+    for size in sizes:
+        mylist_template = list(range(size))
+        result_sorted.append([
+            len(mylist_template),
+            time_search(selection_sort, mylist_template),
+            time_search(qsort_fixed_pivot, mylist_template),
+            time_search(qsort_random_pivot, mylist_template),
+            time_search(tim_sort, mylist_template)
+        ])
+    return result_sorted
+    ###
+headers=['n', 'Selection Sort', 'qsort-fixed-pivot', 'qsort-random-pivot', 'Timsort']
+def print_results(results, headers):
     """ change as needed for comparisons """
     print(tabulate.tabulate(results,
-                            headers=['n', 'qsort-fixed-pivot', 'qsort-random-pivot'],
+                            headers=headers,
                             floatfmt=".3f",
                             tablefmt="github"))
 
 def test_print():
-    print_results(compare_sort())
+    sizes = [100, 500, 1000, 2000, 5000, 10000] 
+    results_sorted = compare_sort(sizes=sizes)
+    print_results(results_sorted, headers=['n', 'Selection Sort', 'qsort-fixed-pivot', 'qsort-random-pivot', 'Timsort'])
+    
 
 random.seed()
 test_print()
