@@ -21,3 +21,4 @@ The random pivot quicksort had consistent outputs, Its runtime stayed pretty clo
 
 
 - **1c.**
+Random pivot quicksort was my fastest output. Looking at Timsort's ouput compared to random pivot quicksort, I see that Timsort is much faster and more efficient. At n =10000 in the random permutations, the random pivot quicksort took 26.68 ms while Timsort took 0.207 ms. This proves that Timsort is the optimal choice and much more efficient in terms of runtime.
